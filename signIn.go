@@ -8,8 +8,6 @@ import (
 	"io"
 	"log"
 	"net/http"
-
-	"github.com/fotonmoton/golang_networking/middleware"
 )
 
 func signIn(w http.ResponseWriter, r *http.Request) {
@@ -48,5 +46,5 @@ func signIn(w http.ResponseWriter, r *http.Request) {
 
 	// we modify request with new context value
 	// to notify that this request is authenticated
-	*r = *r.Clone(context.WithValue(r.Context(), middleware.CONTEXT_AUTH_KEY, true))
+	*r = *r.Clone(context.WithValue(r.Context(), CONTEXT_AUTH_KEY, true))
 }

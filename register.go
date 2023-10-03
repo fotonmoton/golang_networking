@@ -17,12 +17,10 @@ type attempt struct {
 	Password password `json:"password"`
 }
 
-var registered map[login]password = make(map[login]password)
-
 /*
-1. get data from customer
+1. get data from user
 2. validate data
-3. save new user
+3. create new account
 */
 func register(w http.ResponseWriter, r *http.Request) {
 	log.Printf("register handler")
