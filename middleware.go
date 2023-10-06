@@ -102,3 +102,12 @@ func UrlPath(next http.HandlerFunc) http.HandlerFunc {
 		next(w, req)
 	}
 }
+
+func GlobalMiddleware(h http.Handler) http.Handler {
+	// Middleware and mux.MiddlewareFunc types are different.
+	// This is wy we should wrap h handler and convert it to http.HandlerFunc
+	var wrapped http.HandlerFunc = func(w http.ResponseWriter, r *http.Request) { h.ServeHTTP(w, r) }
+
+	// this middlewares will be called on every request to every handler
+	return ApplyMiddleware(wrapped, RequestTime, UrlPath)
+}

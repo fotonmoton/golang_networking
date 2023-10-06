@@ -3,17 +3,9 @@ package main
 import (
 	"net/http"
 
+	"github.com/fotonmoton/golang_networking/files"
 	"github.com/gorilla/mux"
 )
-
-func GlobalMiddleware(h http.Handler) http.Handler {
-	// Middleware and mux.MiddlewareFunc types are different.
-	// This is wy we should wrap h handler and convert it to http.HandlerFunc
-	var wrapped http.HandlerFunc = func(w http.ResponseWriter, r *http.Request) { h.ServeHTTP(w, r) }
-
-	// this middlewares will be called on every request to every handler
-	return ApplyMiddleware(wrapped, RequestTime, UrlPath)
-}
 
 func main() {
 	r := mux.NewRouter()
@@ -27,5 +19,13 @@ func main() {
 	r.HandleFunc("/users", Authorize(users))
 	// another way to apply same middleware
 	r.HandleFunc("/subscriptions", ApplyMiddleware(subscriptions, Authorize))
+
+	// Files REST API
+	f := r.PathPrefix("/files").Subrouter()
+	f.HandleFunc("", files.ListFiles).Methods("GET")
+	f.HandleFunc("", files.CreateFile).Methods("POST")
+	f.HandleFunc("/{file}", files.ShowFile).Methods("GET")
+	f.HandleFunc("/{file}", files.UpdateFile).Methods("PUT")
+	f.HandleFunc("/{file}", files.DeleteFile).Methods("DELETE")
 	http.ListenAndServe("localhost:8080", r)
 }
