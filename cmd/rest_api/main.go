@@ -1,9 +1,9 @@
 package main
 
 import (
+	"log"
 	"net/http"
 
-	"github.com/fotonmoton/golang_networking/files"
 	"github.com/gorilla/mux"
 )
 
@@ -22,10 +22,11 @@ func main() {
 
 	// Files REST API
 	f := r.PathPrefix("/files").Subrouter()
-	f.HandleFunc("", files.ListFiles).Methods("GET")
-	f.HandleFunc("", files.CreateFile).Methods("POST")
-	f.HandleFunc("/{file}", files.ShowFile).Methods("GET")
-	f.HandleFunc("/{file}", files.UpdateFile).Methods("PUT")
-	f.HandleFunc("/{file}", files.DeleteFile).Methods("DELETE")
+	f.HandleFunc("", ListFiles).Methods("GET")
+	f.HandleFunc("", CreateFile).Methods("POST")
+	f.HandleFunc("/{file:.+}", ShowFile).Methods("GET")
+	f.HandleFunc("/{file:.+}", UpdateFile).Methods("PUT")
+	f.HandleFunc("/{file:.+}", DeleteFile).Methods("DELETE")
+	log.Println("listening on localhost:8080")
 	http.ListenAndServe("localhost:8080", r)
 }
